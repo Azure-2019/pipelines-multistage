@@ -1,0 +1,30 @@
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'windows-latest'
+      demands: azureps
+    continueOnError: false
+
+    steps:
+    
+    - task: AzurePowerShell@1
+      inputs:
+        ConnectedServiceNameSelector: 'ConnectedServiceNameARM'
+        ConnectedServiceNameARM: 'Free Trial(b7b27048-20b2-4d26-b667-e5cc84433c79)'
+        ScriptType: 'InlineScript'
+        Inline: 'New-AzureRmResourceGroup -Name RGP01 -Location "South Central US"'
+    - task: AzurePowerShell@4
+      inputs:
+        azureSubscription: 'Free Trial(b7b27048-20b2-4d26-b667-e5cc84433c79)'
+        ScriptType: 'InlineScript'
+        Inline: 'Install-Module -Name AzureRM -Force'
+        azurePowerShellVersion: 'LatestVersion'
+
+    - task: AzurePowerShell@4
+      inputs:
+        azureSubscription: 'Free Trial(b7b27048-20b2-4d26-b667-e5cc84433c79)'
+        ScriptType: 'InlineScript'
+        Inline: 'Install-Module -Name Az -Force'
+        azurePowerShellVersion: 'LatestVersion'
